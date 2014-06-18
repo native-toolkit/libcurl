@@ -7,7 +7,7 @@
 		<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/zlib/"/>
 		
 		<compilerflag value="-DCURL_STATICLIB" />
-		<compilerflag value="-DUSE_AXTLS=1" if="LIBCURL_SSL" />
+		<compilerflag value="-DUSE_AXTLS=1" if="NATIVE_TOOLKIT_CURL_SSL" />
 		<compilerflag value="-DHAVE_CONFIG_H" unless="windows"/>
 		<compilerflag value="-DWIN32" if="windows"/>
 		<compilerflag value="-DALLOW_MSVC6_WITHOUT_PSDK" if="windows"/>
@@ -103,7 +103,7 @@
 		<file name="${NATIVE_TOOLKIT_PATH}/curl/src/hostcheck.c" />
 		<file name="${NATIVE_TOOLKIT_PATH}/curl/src/vtls/vtls.c" />
 		
-		<section if="LIBCURL_SSL" >
+		<section if="NATIVE_TOOLKIT_CURL_SSL" >
 
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/config" />
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/crypto" />

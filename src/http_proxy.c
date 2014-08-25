@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -69,7 +69,7 @@ CURLcode Curl_proxy_connect(struct connectdata *conn)
     prot_save = conn->data->req.protop;
     memset(&http_proxy, 0, sizeof(http_proxy));
     conn->data->req.protop = &http_proxy;
-    conn->bits.close = FALSE;
+    connkeep(conn, "HTTP proxy CONNECT");
     result = Curl_proxyCONNECT(conn, FIRSTSOCKET,
                                conn->host.name, conn->remote_port);
     conn->data->req.protop = prot_save;
@@ -92,7 +92,7 @@ CURLcode Curl_proxy_connect(struct connectdata *conn)
 CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                            int sockindex,
                            const char *hostname,
-                           unsigned short remote_port)
+                           int remote_port)
 {
   int subversion=0;
   struct SessionHandle *data=conn->data;
@@ -165,7 +165,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
           return CURLE_OUT_OF_MEMORY;
         }
 
-        if(!Curl_checkheaders(data, "Host:")) {
+        if(!Curl_checkProxyheaders(conn, "Host:")) {
           host = aprintf("Host: %s\r\n", hostheader);
           if(!host) {
             free(hostheader);
@@ -173,10 +173,10 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
             return CURLE_OUT_OF_MEMORY;
           }
         }
-        if(!Curl_checkheaders(data, "Proxy-Connection:"))
+        if(!Curl_checkProxyheaders(conn, "Proxy-Connection:"))
           proxyconn = "Proxy-Connection: Keep-Alive\r\n";
 
-        if(!Curl_checkheaders(data, "User-Agent:") &&
+        if(!Curl_checkProxyheaders(conn, "User-Agent:") &&
            data->set.str[STRING_USERAGENT])
           useragent = conn->allocptr.uagent;
 
@@ -200,7 +200,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
         free(hostheader);
 
         if(CURLE_OK == result)
-          result = Curl_add_custom_headers(conn, req_buffer);
+          result = Curl_add_custom_headers(conn, TRUE, req_buffer);
 
         if(CURLE_OK == result)
           /* CRLF terminate the request */

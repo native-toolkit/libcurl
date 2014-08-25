@@ -104,11 +104,11 @@
 		<file name="${NATIVE_TOOLKIT_PATH}/curl/src/vtls/vtls.c" />
 		
 		<section if="NATIVE_TOOLKIT_CURL_SSL" >
-
+			
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/config" />
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/crypto" />
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/ssl" />
-
+			
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/crypto/aes.c" />
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/crypto/bigint.c" />
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/crypto/crypto_misc.c" />
@@ -128,7 +128,7 @@
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/ssl/tls1_clnt.c" />
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/ssl/tls1_svr.c" />
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/axTLS/ssl/x509.c" />
-
+			
 			<file name="${NATIVE_TOOLKIT_PATH}/curl/src/vtls/axtls.c" />
 			
 		</section>

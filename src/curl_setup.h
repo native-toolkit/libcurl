@@ -112,6 +112,13 @@
 #  endif
 #endif
 
+/* Solaris needs this to get a POSIX-conformant getpwuid_r */
+#if defined(sun) || defined(__sun)
+#  ifndef _POSIX_PTHREAD_SEMANTICS
+#    define _POSIX_PTHREAD_SEMANTICS 1
+#  endif
+#endif
+
 /* ================================================================ */
 /*  If you need to include a system header file for your platform,  */
 /*  please, do it beyond the point further indicated in this file.  */
@@ -601,12 +608,14 @@ int netware_init(void);
 #define USE_SSL    /* SSL support has been enabled */
 #endif
 
-#if defined(HAVE_GSSAPI) || defined(USE_WINDOWS_SSPI)
+#if !defined(CURL_DISABLE_CRYPTO_AUTH) && \
+    (defined(HAVE_GSSAPI) || defined(USE_WINDOWS_SSPI))
 #define USE_HTTP_NEGOTIATE
 #endif
 
 /* Single point where USE_NTLM definition might be done */
-#if !defined(CURL_DISABLE_HTTP) && !defined(CURL_DISABLE_NTLM)
+#if !defined(CURL_DISABLE_HTTP) && !defined(CURL_DISABLE_NTLM) && \
+    !defined(CURL_DISABLE_CRYPTO_AUTH)
 #if defined(USE_SSLEAY) || defined(USE_WINDOWS_SSPI) || \
     defined(USE_GNUTLS) || defined(USE_NSS) || defined(USE_DARWINSSL)
 #define USE_NTLM

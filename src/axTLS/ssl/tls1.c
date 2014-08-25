@@ -166,6 +166,7 @@ EXP_FUNC SSL_CTX *STDCALL ssl_ctx_new(uint32_t options, int num_sessions)
 {
     SSL_CTX *ssl_ctx = (SSL_CTX *)calloc(1, sizeof (SSL_CTX));
     ssl_ctx->options = options;
+    RNG_initialize();
 
     if (load_key_certs(ssl_ctx) < 0)
     {
@@ -659,7 +660,7 @@ static void add_hmac_digest(SSL *ssl, int mode, uint8_t *hmac_header,
             ssl->cipher_info->digest_size, hmac_buf);
 
 #if 0
-    print_blob("record", ssl->hmac_tx, SSL_RECORD_SIZE);
+    print_blob("record", hmac_header, SSL_RECORD_SIZE);
     print_blob("buf", buf, buf_len);
     if (mode == SSL_SERVER_WRITE || mode == SSL_CLIENT_WRITE)
     {
@@ -1070,7 +1071,6 @@ int send_packet(SSL *ssl, uint8_t protocol, const uint8_t *in, int length)
         /* add the explicit IV for TLS1.1 */
         if (ssl->version >= SSL_PROTOCOL_VERSION1_1 &&
                         ssl->cipher_info->iv_size)
-                        
         {
             uint8_t iv_size = ssl->cipher_info->iv_size;
             uint8_t *t_buf = alloca(msg_length + iv_size);
@@ -1130,7 +1130,7 @@ static int set_key_block(SSL *ssl, int is_write)
             ssl->dc->master_secret, ssl->dc->key_block, 
             ciph_info->key_block_size);
 #if 0
-        print_blob("keyblock", ssl->key_block, ciph_info->key_block_size);
+        print_blob("keyblock", ssl->dc->key_block, ciph_info->key_block_size);
 #endif
     }
 
@@ -1667,8 +1667,10 @@ SSL_SESSION *ssl_session_update(int max_sessions, SSL_SESSION *ssl_sessions[],
         {
             if (ssl_sessions[i])
             {
-                /* kill off any expired sessions */
-                if (tm > ssl_sessions[i]->conn_time + SSL_EXPIRY_TIME)
+                /* kill off any expired sessions (including those in 
+                   the future) */
+                if ((tm > ssl_sessions[i]->conn_time + SSL_EXPIRY_TIME) ||
+                            (tm < ssl_sessions[i]->conn_time))
                 {
                     session_free(ssl_sessions, i);
                     continue;
@@ -1712,13 +1714,9 @@ SSL_SESSION *ssl_session_update(int max_sessions, SSL_SESSION *ssl_sessions[],
     }
 
     /* ok, we've used up all of our sessions. So blow the oldest session away */
-    if (oldest_sess != NULL)
-    {
-        oldest_sess->conn_time = tm;
-        memset(oldest_sess->session_id, 0, sizeof(SSL_SESSION_ID_SIZE));
-        memset(oldest_sess->master_secret, 0, sizeof(SSL_SECRET_SIZE));
-    }
-
+    oldest_sess->conn_time = tm;
+    memset(oldest_sess->session_id, 0, sizeof(SSL_SESSION_ID_SIZE));
+    memset(oldest_sess->master_secret, 0, sizeof(SSL_SECRET_SIZE));
     SSL_CTX_UNLOCK(ssl->ssl_ctx->mutex);
     return oldest_sess;
 }

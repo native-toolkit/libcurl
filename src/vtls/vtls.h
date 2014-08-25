@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -26,6 +26,10 @@
 #ifndef MD5_DIGEST_LENGTH
 #define MD5_DIGEST_LENGTH 16 /* fixed size */
 #endif
+
+/* see http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg-04 */
+#define ALPN_HTTP_1_1_LENGTH 8
+#define ALPN_HTTP_1_1 "http/1.1"
 
 bool Curl_ssl_config_matches(struct ssl_config_data* data,
                              struct ssl_config_data* needle);
@@ -85,8 +89,6 @@ void Curl_ssl_kill_session(struct curl_ssl_session *session);
 void Curl_ssl_delsessionid(struct connectdata *conn, void *ssl_sessionid);
 
 /* get N random bytes into the buffer */
-void Curl_ssl_random(struct SessionHandle *data, unsigned char *buffer,
-                     size_t length);
 void Curl_ssl_md5sum(unsigned char *tmp, /* input */
                      size_t tmplen,
                      unsigned char *md5sum, /* output */

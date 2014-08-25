@@ -314,6 +314,7 @@ static int new_pem_obj(SSL_CTX *ssl_ctx, int is_cacert, char *where,
 
                 /* 4/3 bigger than what we need but so what */
                 ssl_obj->buf = (uint8_t *)calloc(1, pem_size);
+                ssl_obj->len = pem_size;
 
                 if (i == IS_RSA_PRIVATE_KEY && 
                             strstr(start, "Proc-Type:") && 
@@ -326,11 +327,15 @@ static int new_pem_obj(SSL_CTX *ssl_ctx, int is_cacert, char *where,
                         goto error;
                     }
                 }
-                else if (base64_decode(start, pem_size, 
-                            ssl_obj->buf, &ssl_obj->len) != 0)
+                else 
                 {
-                    ret = SSL_ERROR_BAD_CERTIFICATE;
-                    goto error;
+                    ssl_obj->len = pem_size;
+                    if (base64_decode(start, pem_size, 
+                                ssl_obj->buf, &ssl_obj->len) != 0)
+                    {
+                        ret = SSL_ERROR_BAD_CERTIFICATE;
+                        goto error;
+                    }
                 }
 
                 switch (i)

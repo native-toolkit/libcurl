@@ -527,16 +527,7 @@
 /* ===================================== */
 
 #elif defined(__GNUC__)
-#  if defined(__i386__) || defined(__ppc__) || defined(IPHONE) || defined(ANDROID) || defined(WEBOS) || defined(BLACKBERRY) || defined(RASPBERRYPI) || defined(TIZEN)
-#    define CURL_SIZEOF_LONG           4
-#    define CURL_TYPEOF_CURL_OFF_T     long long
-#    define CURL_FORMAT_CURL_OFF_T     "lld"
-#    define CURL_FORMAT_CURL_OFF_TU    "llu"
-#    define CURL_FORMAT_OFF_T          "%lld"
-#    define CURL_SIZEOF_CURL_OFF_T     8
-#    define CURL_SUFFIX_CURL_OFF_T     LL
-#    define CURL_SUFFIX_CURL_OFF_TU    ULL
-#  elif defined(__x86_64__) || defined(__ppc64__)
+#  if defined(__x86_64__) || defined(__ppc64__) || defined(__aarch64__)
 #    define CURL_SIZEOF_LONG           8
 #    define CURL_TYPEOF_CURL_OFF_T     long
 #    define CURL_FORMAT_CURL_OFF_T     "ld"
@@ -545,6 +536,15 @@
 #    define CURL_SIZEOF_CURL_OFF_T     8
 #    define CURL_SUFFIX_CURL_OFF_T     L
 #    define CURL_SUFFIX_CURL_OFF_TU    UL
+#  elif defined(__i386__) || defined(__ppc__) || defined(IPHONE) || defined(ANDROID) || defined(WEBOS) || defined(BLACKBERRY) || defined(RASPBERRYPI) || defined(TIZEN)
+#    define CURL_SIZEOF_LONG           4
+#    define CURL_TYPEOF_CURL_OFF_T     long long
+#    define CURL_FORMAT_CURL_OFF_T     "lld"
+#    define CURL_FORMAT_CURL_OFF_TU    "llu"
+#    define CURL_FORMAT_OFF_T          "%lld"
+#    define CURL_SIZEOF_CURL_OFF_T     8
+#    define CURL_SUFFIX_CURL_OFF_T     LL
+#    define CURL_SUFFIX_CURL_OFF_TU    ULL
 #  endif
 #  define CURL_TYPEOF_CURL_SOCKLEN_T socklen_t
 #  define CURL_SIZEOF_CURL_SOCKLEN_T 4

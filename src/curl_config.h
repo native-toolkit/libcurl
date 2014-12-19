@@ -587,7 +587,9 @@
 #define HAVE_SIGNAL_H 1
 
 /* Define to 1 if you have the sigsetjmp function or macro. */
+#ifndef ANDROID_X86
 #define HAVE_SIGSETJMP 1
+#endif
 
 /* Define to 1 if sig_atomic_t is an available typedef. */
 #define HAVE_SIG_ATOMIC_T 1

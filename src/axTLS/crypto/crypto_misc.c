@@ -63,6 +63,11 @@ const char * const unsupported_str = "Error: Feature not supported\n";
  * Retrieve a file and put it into memory
  * @return The size of the file, or -1 on failure.
  */
+
+// Allow some kind of virtual file system
+typedef int (*get_file_callback_func)(const char *filename, uint8_t **buf);
+get_file_callback_func get_file_callback = 0;
+
 int get_file(const char *filename, uint8_t **buf)
 {
     int total_bytes = 0;
@@ -72,6 +77,12 @@ int get_file(const char *filename, uint8_t **buf)
 
     if (stream == NULL)
     {
+        if (get_file_callback!=0)
+        {
+           int result = get_file_callback(filename,buf);
+           if (result>=0)
+              return result;
+        }
 #ifdef CONFIG_SSL_FULL_MODE         
         printf("file '%s' does not exist\n", filename); TTY_FLUSH();
 #endif

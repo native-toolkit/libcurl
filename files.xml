@@ -1,7 +1,23 @@
 <xml>
-	
-	<files id="native-toolkit-curl">
+
+	<files id="native-toolkit-curl-depends"  >
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/curl.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/curlbuild.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/curlrules.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/curlver.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/easy.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/mprintf.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/multi.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/stdcheaders.h"/>
+		<depend name="${NATIVE_TOOLKIT_PATH}/curl/include/curl/typecheck-gcc.h"/>
+ 	</files>
+
+	<files id="native-toolkit-curl" tags="" >
 		
+		<cache value="1" />
+		<tag value="${NATIVE_TOOLKIT_OPTIM_TAG}" if="NATIVE_TOOLKIT_OPTIM_TAG" />
+		<depend files="native-toolkit-curl-depends" />
+
 		<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/include/"/>
 		<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/curl/src/"/>
 		<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/zlib/"/>
@@ -13,6 +29,7 @@
 		<compilerflag value="-DWIN32" if="windows"/>
 		<compilerflag value="-DALLOW_MSVC6_WITHOUT_PSDK" if="windows"/>
 		
+
 		<section if="windows">
 			
 			<!--<file name="${NATIVE_TOOLKIT_PATH}/curl/src/hostthre.c"/>-->

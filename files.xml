@@ -28,6 +28,8 @@
 		<compilerflag value="-DHAVE_CONFIG_H" unless="windows"/>
 		<compilerflag value="-DWIN32" if="windows"/>
 		<compilerflag value="-DALLOW_MSVC6_WITHOUT_PSDK" if="windows"/>
+		<compilerflag value="-DENABLE_IPV6=1" />
+		<compilerflag value="-DNEED_THREAD_SAFE=1" />
 		
 
 		<section if="windows">
